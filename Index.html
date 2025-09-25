@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Peer-to-Peer Referral Network – Cosmic 3D SPA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Firebase SDK via script tag -->
+  <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,700,900" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter',sans-serif;
+      background: linear-gradient(120deg,#1b223c 0%,#2b224a 100%);
+      color: #E9F1FB;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+    .space-bg {
+      position: fixed; top:0; left:0; width:100vw; height:100vh; z-index:-1;
+      pointer-events:none;
+      background:
+        radial-gradient(ellipse 48% 23% at 73% 13%, #7df4f948 0%, #1d1833 100%),
+        radial-gradient(ellipse 34% 18% at 24% 73%, #f33bff29 0%, #1d223c 98%);
+      filter: blur(38px) saturate(1.08);
+      opacity: .95;
+    }
+    .glass-card {
+      background: rgba(27,34,61,0.8);
+      border-radius: 2.1rem;
+      box-shadow: 0 10px 54px -20px #52edff99, 0 1px 36px -14px #454b7e33;
+      border: 2.5px solid rgba(128,225,255,0.13);
+      backdrop-filter: blur(14px) saturate(1.26);
+      transition: transform .19s cubic-bezier(.15,2,.42,1), box-shadow .25s;
+    }
+    .glass-card:hover {
+      box-shadow: 0 18px 62px -8px #72f9ff80, 0 0 0 3px #72f9ffc2;
+      transform: translateY(-4px) scale(1.014);
+      border-color: #72f9ff99;
+    }
+    .cosmo-btn {
+      background: linear-gradient(93deg,#37e3fd 18%,#735eff 89%);
+      color: #fff; font-weight: 800;
+      border-radius: 1.19em;
+      box-shadow: 0 10px 34px -12px #37e3fd88;
+      font-size: 1.09em;
+      transition: box-shadow .18s, transform .19s;
+      border: none;
+    }
+    .cosmo-btn:hover {
+      box-shadow: 0 14px 44px -12px #8df0fcbb, 0 0 0 3px #62e8ffd8;
+      background: linear-gradient(93deg,#62e8ff,#735eff 89%);
+      transform: translateY(-2px) scale(1.025);
+    }
+    .nav-bar {
+      background: rgba(26,34,51,0.95);
+      box-shadow: 0 2px 22px -10px #2cf9f830;
+      border-radius: 3rem;
+      padding: .7em 2.2em .8em 1em;
+      display: flex; align-items: center; gap: 1.5em;
+    }
+    .nav-tab {
+      background: rgba(37,52,102,0.19);
+      border-radius: 1.1em;
+      padding: .7em 2em;
+      color: #E0E8F7;
+      border: 1.5px solid #393b5a99;
+      margin: .23em .13em;
+      font-weight: 900;
+      font-size: 1.13em;
+      transition: background .18s, box-shadow .18s, color .18s;
+      cursor:pointer;
+    }
+    .nav-tab.active {
+      background: linear-gradient(92deg,#20245e 59%,#7df4f94a 150%);
+      color: #fff;
+      box-shadow: 0 2px 18px -7px #95f7ffe1;
+      border-color: #72f9ffc7;
+    }
+    .cosmo-icon {
+      vertical-align: middle;
+      margin-right:.5em;
+      filter: drop-shadow(0 0 7px #74cbff79);
+    }
+    .glass-card h1 {
+      font-size: 2em;
+      font-weight: bold;
+      color: #7df4f9;
+      margin-bottom: .6em;
+      line-height: 1.12;
+      text-shadow: 0 2px 14px #254b78a8;
+    }
+    @media (max-width: 800px) {
+      .nav-bar {flex-wrap:wrap;padding:1.2em .7em;}
+      .glass-card {padding:2em .74em;}
+      .nav-tab {padding:.47em 1.1em;}
+      .glass-card h1 {font-size:1.18em;}
+    }
+  </style>
+</head>
+<body>
+  <div class="space-bg"></div>
+  <header class="nav-bar mt-6 mx-auto max-w-6xl" style="width:98%; min-width:330px;">
+    <h1 class="font-bold text-[2rem] text-white mr-7">Peer-to-Peer Referral Network</h1>
+    <nav id="tabs"></nav>
+    <button class="cosmo-btn ml-auto" onclick="alert('Share coming soon!')">Share 🔗</button>
+  </header>
+  <main class="pt-8 px-2 max-w-2xl mx-auto w-full">
+    <div id="app"></div>
+  </main>
+  <!-- Firebase setup and SPA logic -->
+  <script>
+    // Replace with your own Firebase project config! (from the Firebase Console)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDK_m-k4SIidUMlFYM-FOkfEncHc8_TLcY",
+    authDomain: "myref---p2p-job-referral.firebaseapp.com",
+    projectId: "myref---p2p-job-referral",
+    storageBucket: "myref---p2p-job-referral.firebasestorage.app",
+    messagingSenderId: "1017476017485",
+    appId: "1:1017476017485:web:cbe80cdcb1ae781d1e9b04",
+    };
+    if (window.firebase && firebaseConfig.apiKey !== "REPLACE-ME") {
+      firebase.initializeApp(firebaseConfig);
+      // you can now use: firebase.auth(), firebase.firestore(), etc.
+    }
+    // SPA tabs/pages
+    let currentTab = "home";
+    let tabs = [
+      { id: "home", label: "Home", icon: "🏠" },
+      { id: "market", label: "Referral Market", icon: "💼" },
+      { id: "referrer", label: "Referrer Dashboard", icon: "🧑‍💼" },
+      { id: "jobseeker", label: "Job Seeker Dashboard", icon: "🧑‍💻" },
+      { id: "network", label: "Network Map", icon: "🪐" },
+      { id: "profile", label: "Profile", icon: "👤" }
+    ];
+    function renderTabs() {
+      const nav = document.getElementById("tabs");
+      nav.innerHTML = "";
+      tabs.forEach(tab => {
+        const btn = document.createElement("button");
+        btn.className = "nav-tab" + (currentTab === tab.id ? " active" : "");
+        btn.innerHTML = tab.icon + " " + tab.label;
+        btn.onclick = () => { currentTab = tab.id; renderAll(); };
+        nav.appendChild(btn);
+      });
+    }
+    function card(contentArray) {
+      let card = document.createElement("div");
+      card.className = "glass-card mx-auto px-10 py-9 my-10";
+      card.innerHTML = contentArray.join('');
+      return card;
+    }
+    // SPA views:
+    function renderAll() {
+      renderTabs();
+      const app = document.getElementById("app"); app.innerHTML = "";
+      if(currentTab === "home") return app.appendChild(card([
+        `<h1>Get the best jobs<br>with real employee referrals</h1>`,
+        `<div class="mb-6 text-lg text-sky-100">In today's market, your network matters.<br>This platform connects you directly to insiders for high-success referrals.</div>`,
+        `<div class="flex gap-5 justify-center my-6">
+          <button class="cosmo-btn px-7 py-3 text-lg" onclick="currentTab='jobseeker';renderAll()">Find a Referrer</button>
+          <button class="cosmo-btn px-7 py-3 text-lg" style="background:linear-gradient(99deg,#33ffbe 18%,#745dff 88%)" onclick="currentTab='referrer';renderAll()">Become a Referrer</button>
+        </div>`,
+        `<div class="text-center"><a href="#" class="text-sky-200 hover:text-white text-base underline underline-offset-2">Learn more about the network</a></div>`
+      ]));
+      if(currentTab === "market") return app.appendChild(card([
+        `<h1>Referral Market <span class="cosmo-icon">💼</span></h1>`,
+        `<div class="grid gap-6 mt-5"><div class="glass-card p-5 flex flex-col items-center"> 
+            <div class="text-2xl text-white font-bold mb-2">HOT: Frontend Engineer at Stripe</div>
+            <div class="font-semibold text-indigo-200 mb-2">3 insiders available</div>
+            <button class="cosmo-btn px-6 py-2 mt-2">Request Referral</button>
+          </div></div>`,
+        `<div class="text-sky-400 mt-7 font-bold">Network referrals are lightning fast! Get your CV reviewed in minutes.</div>`
+      ]));
+      if(currentTab === "referrer") return app.appendChild(card([
+        `<h1>Referrer Dashboard <span class="cosmo-icon">🧑‍💼</span></h1>`,
+        `<div class="mb-4 text-base text-sky-200">Your badges, points, and incoming requests, ranked by match.</div>`,
+        `<div class="glass-card p-5 my-5">
+            <div class="text-lg mb-1 text-indigo-100">Incoming Request: John Doe</div>
+            <div class="text-sky-200 mb-2 text-base">Python, Django, achievement [AI Pitch]</div>
+            <div class="flex gap-3"><button class="cosmo-btn px-4 py-2">Accept</button><button class="cosmo-btn px-4 py-2" style="background:#373e5a">Deny</button></div>
+         </div>`,
+         `<div class="text-right mt-7 text-cyan-300 font-semibold">Points: 8 &nbsp;|&nbsp; Badges: Helper Lv1</div>`
+      ]));
+      if(currentTab === "jobseeker") return app.appendChild(card([
+        `<h1>Job Seeker Dashboard <span class="cosmo-icon">🧑‍💻</span></h1>`,
+        `<div class="mb-5 text-base text-indigo-300">Request referrals, track your progress, and boost your profile with AI.</div>`,
+        `<div class="glass-card p-5 my-4"><div class="text-lg mb-2">Best Referrer: <span class="font-bold text-sky-200">Alice (Stripe)</span></div>
+          <div class="flex gap-2 mb-2"><span class="font-semibold text-cyan-300">73% success</span>
+          <button class="cosmo-btn px-5 py-2">Request Referral</button></div></div>`
+      ]));
+      if(currentTab === "network") return app.appendChild(card([
+        `<h1>Network Map <span class="cosmo-icon">🪐</span></h1>`,
+        `<svg width="310" height="140" style="width:100%;margin-top:2em;">
+            <circle cx="80" cy="38" r="20" fill="#7df4f9" /><text x="80" y="45" font-size="15" fill="#fff" text-anchor="middle">Stripe</text>
+            <rect x="70" y="85" width="44" height="20" rx="8" fill="#393b5a" /><text x="92" y="98" fill="#fff" font-size="13" text-anchor="middle">Alice</text>
+            <line x1="80" y1="60" x2="92" y2="85" stroke="#7df4f9" stroke-width="3"/>
+         </svg>`
+      ]));
+      if(currentTab === "profile") return app.appendChild(card([
+        `<h1>Profile <span class="cosmo-icon">👤</span></h1>`,
+        `<div class="mb-6 text-base text-indigo-100">Edit your LinkedIn, position, Ghost mode, and recognition here.</div>`,
+        `<div class="flex gap-3">
+          <button class="cosmo-btn px-5 py-3">Edit Profile</button>
+          <button class="cosmo-btn px-5 py-3" style="background:linear-gradient(80deg,#56ffc3 10%,#5543c7 88%)">Toggle Ghost Mode</button>
+         </div>`
+      ]));
+    }
+    renderAll();
+  </script>
+</body>
+</html>
