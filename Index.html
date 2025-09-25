@@ -4,13 +4,57 @@
   <meta charset="UTF-8" />
   <title>Peer-to-Peer Referral Network – Cosmic 3D SPA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Firebase SDK via script tag -->
+
+  <!-- Tailwind CSS for modern beautiful styles -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Inter font for elegant, readable UI -->
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,700,900" rel="stylesheet">
+
+  <!-- Firebase SDKs (required for login, database, real data!) -->
   <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css?family=Inter:400,700,900" rel="stylesheet">
+
+  <!-- Your Firebase project config (paste your actual keys here!) -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDK_m-k4SIidUMlFYM-FOkfEncHc8_TLcY",
+      authDomain: "myref---p2p-job-referral.firebaseapp.com",
+      projectId: "myref---p2p-job-referral.firebasestorage.app",
+      storageBucket: "myref---p2p-job-referral.firebasestorage.app",
+      messagingSenderId: "1017476017485",
+      appId: "1:1017476017485:web:cbe80cdcb1ae781d1e9b04",
+    };
+    if (window.firebase && firebaseConfig.apiKey !== "AIzaSyDK_m-k4SIidUMlFYM-FOkfEncHc8_TLcY") {
+      firebase.initializeApp(firebaseConfig);
+      // You can now use Firebase features.
+    }
+  </script>
+
+  <!-- [Optional] Custom styles for cosmic/3D look -->
   <style>
+    /* ...Insert the previous cosmic/3D CSS block here (if not already in your HTML)... */
+  </style>
+</head>
+  <meta charset="UTF-8" />
+  <title>Peer-to-Peer Referral Network – Cosmic 3D SPA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Tailwind CSS for modern beautiful styles -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Inter font for elegant, readable UI -->
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,700,900" rel="stylesheet">
+
+  <!-- Firebase SDKs (required for login, database, real data!) -->
+  <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js"></script>
+ 
+    if (window.firebase && firebaseConfig.apiKey !== "REPLACE-ME") {
+      firebase.initializeApp(firebaseConfig);
+      // you can now use: firebase.auth(), firebase.firestore(), etc.
     body {
       font-family: 'Inter',sans-serif;
       background: linear-gradient(120deg,#1b223c 0%,#2b224a 100%);
@@ -113,18 +157,7 @@
   </main>
   <!-- Firebase setup and SPA logic -->
   <script>
-    // Replace with your own Firebase project config! (from the Firebase Console)
-    const firebaseConfig = {
-      apiKey: "AIzaSyDK_m-k4SIidUMlFYM-FOkfEncHc8_TLcY",
-    authDomain: "myref---p2p-job-referral.firebaseapp.com",
-    projectId: "myref---p2p-job-referral",
-    storageBucket: "myref---p2p-job-referral.firebasestorage.app",
-    messagingSenderId: "1017476017485",
-    appId: "1:1017476017485:web:cbe80cdcb1ae781d1e9b04",
-    };
-    if (window.firebase && firebaseConfig.apiKey !== "REPLACE-ME") {
-      firebase.initializeApp(firebaseConfig);
-      // you can now use: firebase.auth(), firebase.firestore(), etc.
+   
     }
     // SPA tabs/pages
     let currentTab = "home";
